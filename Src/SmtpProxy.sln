@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmtpProxy", "SmtpProxy\SmtpProxy.csproj", "{C4B446D5-2B4B-4910-B1C3-42AE8631DBAA}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SmtpProxyInstaller", "SmtpProxyInstaller\SmtpProxyInstaller.vdproj", "{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs32
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = SmtpProxy\\SmtpProxy.csproj
+		SccProjectName1 = SmtpProxy
+		SccLocalPath1 = SmtpProxy
+		SccProjectUniqueName2 = SmtpProxyInstaller\\SmtpProxyInstaller.vdproj
+		SccProjectName2 = SmtpProxyInstaller
+		SccLocalPath2 = SmtpProxyInstaller
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C4B446D5-2B4B-4910-B1C3-42AE8631DBAA}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{C4B446D5-2B4B-4910-B1C3-42AE8631DBAA}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{C4B446D5-2B4B-4910-B1C3-42AE8631DBAA}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{C4B446D5-2B4B-4910-B1C3-42AE8631DBAA}.Debug|x86.ActiveCfg = Debug|x86
+		{C4B446D5-2B4B-4910-B1C3-42AE8631DBAA}.Debug|x86.Build.0 = Debug|x86
+		{C4B446D5-2B4B-4910-B1C3-42AE8631DBAA}.Release|Any CPU.ActiveCfg = Release|x86
+		{C4B446D5-2B4B-4910-B1C3-42AE8631DBAA}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{C4B446D5-2B4B-4910-B1C3-42AE8631DBAA}.Release|Mixed Platforms.Build.0 = Release|x86
+		{C4B446D5-2B4B-4910-B1C3-42AE8631DBAA}.Release|x86.ActiveCfg = Release|x86
+		{C4B446D5-2B4B-4910-B1C3-42AE8631DBAA}.Release|x86.Build.0 = Release|x86
+		{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}.Debug|Any CPU.ActiveCfg = Debug
+		{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}.Debug|Any CPU.Build.0 = Debug
+		{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}.Debug|Mixed Platforms.ActiveCfg = Debug
+		{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}.Debug|Mixed Platforms.Build.0 = Debug
+		{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}.Debug|x86.ActiveCfg = Debug
+		{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}.Release|Any CPU.ActiveCfg = Release
+		{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}.Release|Any CPU.Build.0 = Release
+		{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}.Release|Mixed Platforms.ActiveCfg = Release
+		{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}.Release|Mixed Platforms.Build.0 = Release
+		{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}.Release|x86.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
