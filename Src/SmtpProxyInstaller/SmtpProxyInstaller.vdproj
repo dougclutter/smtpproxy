@@ -243,7 +243,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:SMTP Proxy"
         "ProductCode" = "8:{07671B1D-0991-4CAC-81F0-C37769BB333B}"
-        "PackageCode" = "8:{A1ED3CD7-1312-4165-8E52-3BDD00EED962}"
+        "PackageCode" = "8:{57814BA4-8579-4CD1-8830-98BAB5B238FC}"
         "UpgradeCode" = "8:{9F865E7F-745D-4C4E-B08B-0B4E82E55CA1}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
