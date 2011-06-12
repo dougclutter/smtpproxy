@@ -1,4 +1,7 @@
-﻿using System;
+﻿/* Copyright (c) Douglas Associates 2011. All Rights Reserved. 
+ * Licensed for use under the Microsoft Public License which is included by reference here.
+ */
+using System;
 using System.Text;
 using System.Net.Sockets;
 using System.Threading;
