@@ -32,7 +32,10 @@ namespace SmtpProxy
         void StopProxyServer()
         {
             if (Server != null)
+            {
                 Server.Dispose();
+                Server = null;
+            }
         }
     }
 }

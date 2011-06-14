@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmtpProxy", "SmtpProxy\SmtpProxy.csproj", "{C4B446D5-2B4B-4910-B1C3-42AE8631DBAA}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SmtpProxyInstaller", "SmtpProxyInstaller\SmtpProxyInstaller.vdproj", "{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{184205F7-07C2-4101-8F5D-CCF45085A6B9}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "WixInstaller", "WixInstaller\WixInstaller.wixproj", "{D3F90E7E-D15E-49DB-B3B1-BD86F278BEE0}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
@@ -14,9 +16,9 @@ Global
 		SccProjectUniqueName1 = SmtpProxy\\SmtpProxy.csproj
 		SccProjectName1 = SmtpProxy
 		SccLocalPath1 = SmtpProxy
-		SccProjectUniqueName2 = SmtpProxyInstaller\\SmtpProxyInstaller.vdproj
-		SccProjectName2 = SmtpProxyInstaller
-		SccLocalPath2 = SmtpProxyInstaller
+		SccProjectUniqueName2 = WixInstaller\\WixInstaller.wixproj
+		SccProjectName2 = WixInstaller
+		SccLocalPath2 = WixInstaller
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,16 +39,16 @@ Global
 		{C4B446D5-2B4B-4910-B1C3-42AE8631DBAA}.Release|Mixed Platforms.Build.0 = Release|x86
 		{C4B446D5-2B4B-4910-B1C3-42AE8631DBAA}.Release|x86.ActiveCfg = Release|x86
 		{C4B446D5-2B4B-4910-B1C3-42AE8631DBAA}.Release|x86.Build.0 = Release|x86
-		{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}.Debug|Any CPU.ActiveCfg = Debug
-		{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}.Debug|Any CPU.Build.0 = Debug
-		{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}.Debug|Mixed Platforms.ActiveCfg = Debug
-		{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}.Debug|Mixed Platforms.Build.0 = Debug
-		{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}.Debug|x86.ActiveCfg = Debug
-		{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}.Release|Any CPU.ActiveCfg = Release
-		{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}.Release|Any CPU.Build.0 = Release
-		{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}.Release|Mixed Platforms.ActiveCfg = Release
-		{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}.Release|Mixed Platforms.Build.0 = Release
-		{C07CB781-4C7A-4F42-9D58-7DC1CC15D3EC}.Release|x86.ActiveCfg = Release
+		{D3F90E7E-D15E-49DB-B3B1-BD86F278BEE0}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{D3F90E7E-D15E-49DB-B3B1-BD86F278BEE0}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{D3F90E7E-D15E-49DB-B3B1-BD86F278BEE0}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{D3F90E7E-D15E-49DB-B3B1-BD86F278BEE0}.Debug|x86.ActiveCfg = Debug|x86
+		{D3F90E7E-D15E-49DB-B3B1-BD86F278BEE0}.Debug|x86.Build.0 = Debug|x86
+		{D3F90E7E-D15E-49DB-B3B1-BD86F278BEE0}.Release|Any CPU.ActiveCfg = Release|x86
+		{D3F90E7E-D15E-49DB-B3B1-BD86F278BEE0}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{D3F90E7E-D15E-49DB-B3B1-BD86F278BEE0}.Release|Mixed Platforms.Build.0 = Release|x86
+		{D3F90E7E-D15E-49DB-B3B1-BD86F278BEE0}.Release|x86.ActiveCfg = Release|x86
+		{D3F90E7E-D15E-49DB-B3B1-BD86F278BEE0}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

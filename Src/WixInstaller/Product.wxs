@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+  <Product Id="5cca4473-db4b-477f-9bf8-b0f0d0caf5e8"
+           Name="Smtp Proxy" Language="1033" Version="1.1.0" Manufacturer="Douglas Associates"
+           UpgradeCode="9F865E7F-745D-4C4E-B08B-0B4E82E55CA1">
+
+    <Package Id="*" InstallerVersion="200" Compressed="yes" Platform="x86"
+             Comments="Installs the SMTP Proxy service"
+             InstallPrivileges="elevated" InstallScope="perMachine" />
+
+    <!--Detecting the current version-->
+    <Upgrade Id="9F865E7F-745D-4C4E-B08B-0B4E82E55CA1">
+      <UpgradeVersion OnlyDetect="yes" Property="CURRENTORHIGHERVERSIONFOUND"
+              Minimum="1.0.0" IncludeMinimum="yes"/>
+    </Upgrade>
+    <Upgrade Id="9F865E7F-745D-4C4E-B08B-0B4E82E55CA1">
+      <UpgradeVersion OnlyDetect="no" Property="PREVIOUSVERSIONS"
+              Minimum="1.0.0" IncludeMinimum="yes"
+              Maximum="1.1.0" IncludeMaximum="no"/>
+    </Upgrade>
+
+    <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLLOCATION" Name="SmtpProxy">
+          <Component Id="SmtpProxy.exe" Guid="559FDE38-EEC3-49AC-838D-59D6085C8575">
+            <File Id="SmtpProxy.exe"
+                  Name="SmtpProxy.exe"
+                  Source="..\SmtpProxy\bin\Release\SmtpProxy.exe"
+                  KeyPath="yes" Vital="yes" />
+            <ServiceInstall Id ="SmtpProxyServiceInstaller"
+                    Name="SmtpProxy"
+                    DisplayName="SMTP Proxy"
+                     Account="LocalSystem" ErrorControl="normal"
+                    Start="auto" Type="ownProcess" Vital="yes"
+                    Description="Listens on a port for incoming SMTP connections.  Once established, forwards traffic to target SMTP server via encrypted connection.">
+            </ServiceInstall>
+            <ServiceControl Id="StartService"
+                    Name ="SmtpProxy" Start="install" Wait="no"/>
+            <ServiceControl Id="StopService"
+                    Name="SmtpProxy" Stop="both" Wait="yes" Remove="uninstall"/>
+          </Component>
+          <Component Id="SmtpProxy.exe.config" Guid="FEF649C4-EAB1-47C9-B9E1-C20160825BC7">
+            <File Id="SmtpProxy.exe.config"
+                  Name="SmtpProxy.exe.config"
+                  Source="..\SmtpProxy\bin\Release\SmtpProxy.exe.config"
+                  KeyPath="yes" Vital="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id="SmtpProxyServiceFeature" Title="SMTP Proxy Windows Service" Level="1">
+      <ComponentRef Id="SmtpProxy.exe" />
+      <ComponentRef Id="SmtpProxy.exe.config" />
+    </Feature>
+    <PropertyRef Id="NETFRAMEWORK40CLIENT"/>
+    <Condition Message="This application requires .NET Framework 4.0 Client Profile. Please install the .NET Framework then run this installer again.">
+      <![CDATA[Installed OR NETFRAMEWORK40CLIENT]]>
+    </Condition>
+    <InstallExecuteSequence>
+      <RemoveExistingProducts Before="InstallInitialize" />
+    </InstallExecuteSequence>
+    <UI />
+  </Product>
+</Wix>

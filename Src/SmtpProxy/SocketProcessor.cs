@@ -23,7 +23,10 @@ namespace SmtpProxy
         readonly Encoding Encoder = Encoding.ASCII;
         readonly byte[] SocketReceiveBuffer = new byte[512];
         readonly byte[] ServerReadBuffer = new byte[512];
-        ManualResetEvent SocketClosed;
+        /// <summary>
+        /// This event is set to true when either connection (email client or smtp server) is closed
+        /// </summary>
+        ManualResetEvent ConnectionClosed;
         #endregion
 
         #region Public Methods
@@ -32,7 +35,7 @@ namespace SmtpProxy
             Program.Trace.TraceInformation("Socket {0} opened", socket.Handle);
             try
             {
-                using (SocketClosed = new ManualResetEvent(false))
+                using (ConnectionClosed = new ManualResetEvent(false))
                 using (var server = ConnectToServer(socket))
                 {
                     // Begin listening for incoming traffic from the socket
@@ -41,13 +44,21 @@ namespace SmtpProxy
                     // Begin listening for incoming traffic from the smtp server
                     Task.Factory.StartNew(() => SmtpServerRead(socket, server, token), token);
 
-                    // Keep waiting until cancelled or the socket is closed by the sender
-                    WaitHandle.WaitAny(new WaitHandle[] { token.WaitHandle, SocketClosed });
+                    // Keep waiting until cancelled or one of the connections is closed
+                    WaitHandle.WaitAny(new WaitHandle[] { token.WaitHandle, ConnectionClosed });
                 }
             }
             catch (ObjectDisposedException ex)
             {
-                Program.Trace.TraceInformation("SocketProcessor.Start is ignoring an ObjectDisposedException ({0}) probably because the Socket was closed.", ex.Message);
+                Program.Trace.TraceInformation("SocketProcessor.Start is ignoring an ObjectDisposedException ({0}) probably because a connection was closed.", ex.Message);
+            }
+            catch (OperationCanceledException ex)
+            {
+                Program.Trace.TraceInformation("SocketProcessor.Start is ignoring an OperationCanceledException ({0}) probably because a connection was closed.", ex.Message);
+            }
+            catch (AggregateException ex)
+            {
+                Program.Trace.TraceEvent(System.Diagnostics.TraceEventType.Warning, 2, "Unhandled exception ({0}) detected in Task", ex.Message);
             }
             finally
             {
@@ -78,20 +89,15 @@ namespace SmtpProxy
         {
             try
             {
-                // This endless loop will be broken when cancellation is requested
-                // or when the socket/server is closed.
-                while (true)
+                // Loop until cancellation is requested or the socket is closed.
+                while (!token.IsCancellationRequested)
                 {
-                    // Block until the socket coughs up some data
-                    var bytesRead = socket.Receive(SocketReceiveBuffer);
-
-                    // Bail out if we were cancelled
-                    token.ThrowIfCancellationRequested();
-
+                    // Block until the socket coughs up some data.
                     // If zero bytes returned, that means the caller has closed the socket gracefully.
+                    var bytesRead = socket.Receive(SocketReceiveBuffer);
                     if (bytesRead == 0)
                     {
-                        SocketClosed.Set();
+                        ConnectionClosed.Set();
                         return;
                     }
 
@@ -101,10 +107,6 @@ namespace SmtpProxy
 
                     // Write to server
                     server.Write(SocketReceiveBuffer, bytesRead);
-
-
-                    // Again, bail out if we were cancelled
-                    token.ThrowIfCancellationRequested();
                 }
             }
             catch (SocketException ex)
@@ -120,19 +122,17 @@ namespace SmtpProxy
         {
             try
             {
-                // This endless loop will be broken when cancellation is requested
-                // or when the socket/server is closed.
-                while (true)
+                // Loop until cancellation is requested or the SMTP server closes the connection.
+                while (!token.IsCancellationRequested)
                 {
-                    // Block until server coughs up some data
+                    // Block until SMTP server coughs up some data.
+                    // If zero bytes returned, that means the SMTP server has closed the connection gracefully.
                     var bytesRead = server.Read(ServerReadBuffer);
-
-                    // Bail out if we were cancelled
-                    token.ThrowIfCancellationRequested();
-
-                    // If zero bytes returned, that means the caller has closed the server gracefully.
                     if (bytesRead == 0)
+                    {
+                        ConnectionClosed.Set();
                         return;
+                    }
 
                     // Write to Debug
                     string outputString = Encoder.GetString(ServerReadBuffer, 0, bytesRead);
@@ -140,9 +140,6 @@ namespace SmtpProxy
 
                     // Write to socket
                     socket.Send(ServerReadBuffer, 0, bytesRead, SocketFlags.None);
-
-                    // Again, bail out if we were cancelled
-                    token.ThrowIfCancellationRequested();
                 }
             }
             catch (IOException ex)

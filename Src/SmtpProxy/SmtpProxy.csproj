@@ -61,12 +61,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="ProxyServer.cs" />
-    <Compile Include="SmtpProxyInstaller.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="SmtpProxyInstaller.Designer.cs">
-      <DependentUpon>SmtpProxyInstaller.cs</DependentUpon>
-    </Compile>
     <Compile Include="SmtpProxyService.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -84,9 +78,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="SmtpProxyInstaller.resx">
-      <DependentUpon>SmtpProxyInstaller.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="SmtpProxyService.resx">
       <DependentUpon>SmtpProxyService.cs</DependentUpon>
     </EmbeddedResource>

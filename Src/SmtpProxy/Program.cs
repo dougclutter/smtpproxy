@@ -21,9 +21,6 @@ namespace SmtpProxy
             Console.WriteLine("SmtpProxy");
             Console.WriteLine("Copyright (c) Douglas Associates 2011. All Rights Reserved.");
             Console.WriteLine();
-            Console.WriteLine("By default, SmtpProxy will try to run as a Windows Service.");
-            Console.WriteLine("To run as a console application, use the /console option.");
-            Console.WriteLine();
 
             try
             {
@@ -55,6 +52,9 @@ namespace SmtpProxy
         }
         static void RunAsAService()
         {
+            Console.WriteLine("SmtpProxy is attempting to run as a Windows Service.");
+            Console.WriteLine("To run as a console application, use the /console option.");
+            Console.WriteLine();
             var ServicesToRun = new ServiceBase[] { new SmtpProxyService() };
             ServiceBase.Run(ServicesToRun);
         }
