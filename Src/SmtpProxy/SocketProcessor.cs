@@ -2,6 +2,7 @@
  * Licensed for use under the Microsoft Public License which is included by reference here.
  */
 using System;
+using System.Diagnostics;
 using System.Text;
 using System.Net.Sockets;
 using System.Threading;
@@ -58,17 +59,14 @@ namespace SmtpProxy
             }
             catch (AggregateException ex)
             {
-                Program.Trace.TraceEvent(System.Diagnostics.TraceEventType.Warning, 2, "Unhandled exception ({0}) detected in Task", ex.Message);
+                Program.Trace.TraceEvent(System.Diagnostics.TraceEventType.Error, 2, "Unhandled exception ({0}) detected in Task", ex.Message);
             }
-            finally
+            catch (Exception ex)
             {
-                // Close the socket
-                if (socket != null)
-                {
-                    socket.Close();
-                    Program.Trace.TraceInformation("Socket {0} closed", socket.Handle);
-                }
-
+                // Log unexpected exception
+                Program.Trace.TraceEvent(TraceEventType.Error, 5,
+                    "SocketProcessor.Start has thrown an unexpected Exception: {0}: {1}", ex.GetType().Name, ex.Message);
+                throw;
             }
         }
         #endregion
