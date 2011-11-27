@@ -37,13 +37,14 @@ namespace SmtpProxy
             }
             catch (Exception ex)
             {
-                Program.Trace.TraceEvent(TraceEventType.Critical, 0, "Unhandled Exception ({0}) caught:\n{1}", ex.Message, ex.StackTrace);
+                Program.Trace.TraceEvent(TraceEventType.Critical, 4, "Unhandled Exception ({0}) caught:\n{1}", ex.Message, ex.StackTrace);
             }
         }
         static void RunAsAConsole()
         {
-            using (new ProxyServer())
+            using (var server = new ProxyServer())
             {
+                server.StartListening();
                 Console.WriteLine("SmtpProxy is now listening on port {0}.", Settings.Default.PortToListenOn);
                 Console.WriteLine();
                 Console.Write("Press Enter to exit...");

@@ -15,17 +15,22 @@ namespace SmtpProxy
 
         public SmtpProxyService()
         {
+            Program.Trace.TraceInformation("=============================================");
+            Program.Trace.TraceInformation("SmtpProxyService Initializing");
             InitializeComponent();
         }
 
         protected override void OnStart(string[] args)
         {
+            Program.Trace.TraceInformation("SmtpProxyService.OnStart called");
             StopProxyServer();
             Server = new ProxyServer();
+            Server.StartListening();
         }
 
         protected override void OnStop()
         {
+            Program.Trace.TraceInformation("SmtpProxyService.OnStop called");
             StopProxyServer();
         }
 
@@ -33,6 +38,7 @@ namespace SmtpProxy
         {
             if (Server != null)
             {
+                Program.Trace.TraceInformation("ProxyService is being Disposed");
                 Server.Dispose();
                 Server = null;
             }
