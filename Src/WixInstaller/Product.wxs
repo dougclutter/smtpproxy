@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
-  <Product Id="5cca4473-db4b-477f-9bf8-b0f0d0caf5e8"
-           Name="Smtp Proxy" Language="1033" Version="1.1.0" Manufacturer="Douglas Associates"
+  <Product Id="CDD7BBAE-DE59-4C55-BA78-81CD8BF5C99F"
+           Name="Smtp Proxy" Language="1033" Version="1.2.0" Manufacturer="Douglas Associates"
            UpgradeCode="9F865E7F-745D-4C4E-B08B-0B4E82E55CA1">
 
     <Package Id="*" InstallerVersion="200" Compressed="yes" Platform="x86"
@@ -17,7 +17,7 @@
     <Upgrade Id="9F865E7F-745D-4C4E-B08B-0B4E82E55CA1">
       <UpgradeVersion OnlyDetect="no" Property="PREVIOUSVERSIONS"
               Minimum="1.0.0" IncludeMinimum="yes"
-              Maximum="1.1.0" IncludeMaximum="no"/>
+              Maximum="1.2.0" IncludeMaximum="no"/>
     </Upgrade>
 
     <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />

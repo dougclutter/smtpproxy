@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("Douglas Associates")]
 [assembly: AssemblyProduct("SmtpProxy")]
 [assembly: AssemblyCopyright("Copyright © Douglas Associates 2011.  All Rights Reserved.")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyTrademark("SmtpProxy is a trademark of Douglas Associates.")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.1.*")]
-[assembly: AssemblyFileVersion("1.1.0")]
+[assembly: AssemblyVersion("1.2.*")]
+[assembly: AssemblyFileVersion("1.2.0")]
