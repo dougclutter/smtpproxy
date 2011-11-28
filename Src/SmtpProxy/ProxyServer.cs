@@ -83,6 +83,7 @@ namespace SmtpProxy
                     // Accept the pending connection.
                     // The socket will be closed in ProcessSocket.
                     Socket socket = Listener.AcceptSocket();
+                    Program.Trace.TraceInformation("Socket {0} opened", socket.Handle);
 
                     // Process the socket request in a new task so we can start waiting for the next request before the current is done processing
                     Task.Factory.StartNew(() => ProcessSocket(socket));
