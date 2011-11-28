@@ -33,7 +33,6 @@ namespace SmtpProxy
         #region Public Methods
         public void Start(Socket socket, CancellationToken token)
         {
-            Program.Trace.TraceInformation("Socket {0} opened", socket.Handle);
             try
             {
                 using (ConnectionClosed = new ManualResetEvent(false))
@@ -115,6 +114,13 @@ namespace SmtpProxy
             {
                 Program.Trace.TraceInformation("SocketProcessor.SocketReceive is ignoring an ObjectDisposedException ({0}) probably because the Socket was closed.", ex.Message);
             }
+            catch (Exception ex)
+            {
+                // Log unexpected exception
+                Program.Trace.TraceEvent(TraceEventType.Error, 3,
+                    "SocketProcessor.SocketReceive has thrown an unexpected Exception: {0}: {1}", ex.GetType().Name, ex.Message);
+                throw;
+            }
         }
         void SmtpServerRead(Socket socket, SmtpServer server, CancellationToken token)
         {
@@ -147,6 +153,13 @@ namespace SmtpProxy
             catch (ObjectDisposedException ex)
             {
                 Program.Trace.TraceInformation("SocketProcessor.SmtpServerRead has ignored an ObjectDisposedException ({0}) probably because the SmtpServer was Disposed.", ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Log unexpected exception
+                Program.Trace.TraceEvent(TraceEventType.Error, 3,
+                    "SocketProcessor.SmtpServerRead has thrown an unexpected Exception: {0}: {1}", ex.GetType().Name, ex.Message);
+                throw;
             }
         }
         #endregion
