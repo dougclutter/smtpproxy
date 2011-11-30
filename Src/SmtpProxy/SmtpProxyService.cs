@@ -2,6 +2,7 @@
  * Licensed for use under the Microsoft Public License which is included by reference here.
  */
 using System;
+using System.Diagnostics;
 using System.ServiceProcess;
 
 namespace SmtpProxy
@@ -15,14 +16,14 @@ namespace SmtpProxy
 
         public SmtpProxyService()
         {
-            Program.Trace.TraceInformation("=============================================");
-            Program.Trace.TraceInformation("SmtpProxyService Initializing");
+            Program.Trace.TraceEvent(TraceEventType.Information, 1017, "=============================================");
+            Program.Trace.TraceEvent(TraceEventType.Information, 1018, "SmtpProxyService Initializing");
             InitializeComponent();
         }
 
         protected override void OnStart(string[] args)
         {
-            Program.Trace.TraceInformation("SmtpProxyService.OnStart called");
+            Program.Trace.TraceEvent(TraceEventType.Information, 1019, "SmtpProxyService.OnStart called");
             StopProxyServer();
             Server = new ProxyServer();
             Server.StartListening();
@@ -30,7 +31,7 @@ namespace SmtpProxy
 
         protected override void OnStop()
         {
-            Program.Trace.TraceInformation("SmtpProxyService.OnStop called");
+            Program.Trace.TraceEvent(TraceEventType.Information, 1020, "SmtpProxyService.OnStop called");
             StopProxyServer();
         }
 
@@ -38,7 +39,8 @@ namespace SmtpProxy
         {
             if (Server != null)
             {
-                Program.Trace.TraceInformation("ProxyService is being Disposed");
+                Program.Trace.TraceEvent(TraceEventType.Information, 1021, "ProxyService is being Disposed");
+                Server.StopListening();
                 Server.Dispose();
                 Server = null;
             }
