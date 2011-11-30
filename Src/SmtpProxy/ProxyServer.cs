@@ -17,31 +17,20 @@ namespace SmtpProxy
     public class ProxyServer : IDisposable
     {
         #region Variables
-        readonly TcpListener Listener;
-        readonly CancellationTokenSource TokenSource;
-        bool IsDisposed;
+        readonly TcpListener Listener = new TcpListener(System.Net.IPAddress.Any, Settings.Default.PortToListenOn);
+        readonly CancellationTokenSource TokenSource = new CancellationTokenSource();
         #endregion
-        #region Constructor
-        public ProxyServer()
-        {
-            // Initialize cancellation token and listener
-            TokenSource = new CancellationTokenSource();
-            Listener = new TcpListener(System.Net.IPAddress.Any, Settings.Default.PortToListenOn);
-        }
-        #endregion
-        
+
         #region Public Methods
         public void StartListening()
         {
-            if (IsDisposed)
-                throw new InvalidOperationException("ProxyServer.StartListening() cannot be called after the object has been Disposed or StopListening has been called.");
-
             // Start on a new thread so StartListening can return immediately
-            Task.Factory.StartNew(() => Listen());
+            Task.Factory.StartNew(() => Listen(), TokenSource.Token);
         }
         public void StopListening()
         {
-            Dispose();
+            // Cancel TokenSource so child tasks will exit gracefully
+            TokenSource.Cancel();
         }
         public void Dispose()
         {
@@ -55,100 +44,88 @@ namespace SmtpProxy
         {
             // Start the listener
             Listener.Start();
-            Program.Trace.TraceInformation("Listener started. Connections on port {0} will be forwarded to {1}:{2}", 
+            Program.Trace.TraceEvent(TraceEventType.Information, 1005, "Listener started. Connections on port {0} will be forwarded to {1}:{2}",
                 Settings.Default.PortToListenOn,
                 Settings.Default.SmtpHostUrl,
                 Settings.Default.SmtpPort);
 
-            // Loop until cancellation is requested
-            while (!TokenSource.Token.IsCancellationRequested)
+            // Pause for 100ms or exit if cancelled.
+            while (!TokenSource.Token.WaitHandle.WaitOne(100))
             {
-                AcceptSocket();
-            }
-        }
-        void AcceptSocket()
-        {
-            try
-            {
-                // Sleep until a request is pending OR the request has been cancelled
-                while (!Listener.Pending() && !TokenSource.Token.IsCancellationRequested)
+                // Check for a pending connection and process it if found
+                if (Listener.Pending())
                 {
-                    Thread.Sleep(500);
-                }
-
-                // If we have a pending request AND we have NOT been cancelled,
-                // process the pending request in a new Task.
-                if (Listener.Pending() && !TokenSource.Token.IsCancellationRequested)
-                {
-                    // Accept the pending connection.
-                    // The socket will be closed in ProcessSocket.
+                    // Grab the pending connection.
+                    // The socket will be closed in ProcessTraffic.
                     Socket socket = Listener.AcceptSocket();
-                    Program.Trace.TraceInformation("Socket {0} opened", socket.Handle);
+                    Program.Trace.TraceEvent(TraceEventType.Information, 1013, "Socket {0} opened", socket.Handle);
 
-                    // Process the socket request in a new task so we can start waiting for the next request before the current is done processing
-                    Task.Factory.StartNew(() => ProcessSocket(socket));
+                    // Process the socket request in a new task so we can get the next request before the current one is done processing
+                    Task.Factory.StartNew(() => ProcessTraffic(socket), TokenSource.Token);
                 }
             }
-            catch (InvalidOperationException ex)
-            {
-                // Listener not started or has been stopped
-                Program.Trace.TraceInformation("ProxyServer.AcceptSocket has ignored an InvalidOperationException ({0}).", ex.Message);
-            }
+
+            // Stop the listener so no further input will be received and processed
+            Listener.Stop();
+            Program.Trace.TraceEvent(TraceEventType.Information, 1014, "Listener on port {0} stopped ", Settings.Default.PortToListenOn);
         }
-        void ProcessSocket(Socket socket)
+        void ProcessTraffic(Socket socket)
         {
             try
             {
+                // If a cancellation was requested, then we need to exit.
+                // The finally clause ensures the socket is shutdown and closed.
+                TokenSource.Token.ThrowIfCancellationRequested();
+
                 // Process the socket
-                var processor = new SocketProcessor();
-                processor.Start(socket, TokenSource.Token);
+                var processor = new TrafficProcessor(socket, TokenSource.Token);
+                processor.Process();
             }
             catch (SocketException ex)
             {
-                // Listener may have been stopped
-                Program.Trace.TraceInformation("ProxyServer.ProcessSocket has ignored a SocketException ({0}).", ex.Message);
+                IgnoreException(ex);
             }
             catch (InvalidOperationException ex)
             {
-                // Listener not started or has been stopped
-                Program.Trace.TraceInformation("ProxyServer.ProcessSocket has ignored an InvalidOperationException ({0}).", ex.Message);
+                IgnoreException(ex);
             }
             catch (IOException ex)
             {
-                // Failed to complete a read operation
-                Program.Trace.TraceInformation("ProxyServer.ProcessSocket has ignored an IOException ({0}).", ex.Message);
+                IgnoreException(ex);
             }
             catch (Exception ex)
             {
                 // Log unexpected exception
-                Program.Trace.TraceEvent(TraceEventType.Error, 3,
-                    "ProxyServer.ProcessSocket has thrown an unexpected Exception: {0}: {1}", ex.GetType().Name, ex.Message);
+                Program.Trace.TraceEvent(TraceEventType.Error, 1003,
+                    "ProxyServer.ProcessTraffic has thrown an unexpected Exception: {0}: {1}", ex.GetType().Name, ex.Message);
                 throw;
             }
             finally
             {
                 if (socket != null)
                 {
+                    socket.Shutdown(SocketShutdown.Both);
                     socket.Close();
-                    Program.Trace.TraceInformation("Socket {0} closed", socket.Handle);
+                    Program.Trace.TraceEvent(TraceEventType.Information, 1015, "Socket {0} closed", socket.Handle);
                 }
             }
+        }
+        static void IgnoreException(Exception ex)
+        {
+            Program.Trace.TraceEvent(TraceEventType.Warning, 1010,
+                "ProxyServer.ProcessTraffic has ignored an {0}: {1}", ex.GetType().Name, ex.Message);
+
         }
         protected void Dispose(bool disposing)
         {
             if (disposing)
             {
-                if (!IsDisposed)
-                {
-                    IsDisposed = true;
+                // Force the listening to stop
+                StopListening();
 
-                    // Cancel TokenSource so child tasks will exit gracefully
-                    TokenSource.Cancel();
-
-                    // Stop the listener so no further input will be received and processed
-                    Listener.Stop();
-                    Program.Trace.TraceInformation("Listener on port {0} stopped ", Settings.Default.PortToListenOn);
-                }
+                TokenSource.Dispose();
+                Listener.Stop();
+                Program.Trace.TraceEvent(TraceEventType.Information, 1016,"ProxyServer has been Disposed");
             }
         }
         #endregion
