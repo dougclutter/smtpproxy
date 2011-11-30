@@ -21,6 +21,11 @@ namespace SmtpProxy
             Console.WriteLine("SmtpProxy");
             Console.WriteLine("Copyright (c) Douglas Associates 2011. All Rights Reserved.");
             Console.WriteLine();
+            ConsoleAndTraceWriteLine("Starting up at {0:g}.", DateTime.Now);
+            ConsoleAndTraceWriteLine("Settings have been read from {0}", AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
+            ConsoleAndTraceWriteLine("Listening on port {0}.", Settings.Default.PortToListenOn);
+            ConsoleAndTraceWriteLine("Traffic will be forwarded to {0}:{1}", Settings.Default.SmtpHostUrl, Settings.Default.SmtpPort);
+            Console.WriteLine();
 
             try
             {
@@ -37,7 +42,7 @@ namespace SmtpProxy
             }
             catch (Exception ex)
             {
-                Program.Trace.TraceEvent(TraceEventType.Critical, 4, "Unhandled Exception ({0}) caught:\n{1}", ex.Message, ex.StackTrace);
+                Program.Trace.TraceEvent(TraceEventType.Critical, 1004, "Unhandled Exception caught:\n{0}: {1}\n{2}", ex.GetType().Name, ex.Message, ex.StackTrace);
             }
         }
         static void RunAsAConsole()
@@ -45,10 +50,9 @@ namespace SmtpProxy
             using (var server = new ProxyServer())
             {
                 server.StartListening();
-                Console.WriteLine("SmtpProxy is now listening on port {0}.", Settings.Default.PortToListenOn);
-                Console.WriteLine();
                 Console.Write("Press Enter to exit...");
                 Console.ReadLine();
+                server.StopListening();
             }
         }
         static void RunAsAService()
@@ -58,6 +62,11 @@ namespace SmtpProxy
             Console.WriteLine();
             var ServicesToRun = new ServiceBase[] { new SmtpProxyService() };
             ServiceBase.Run(ServicesToRun);
+        }
+        static void ConsoleAndTraceWriteLine(string format, params object[] args)
+        {
+            Console.WriteLine(format, args);
+            Trace.TraceEvent(TraceEventType.Information, 1000, format, args);
         }
     }
 }
