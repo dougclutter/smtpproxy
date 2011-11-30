@@ -43,7 +43,7 @@
           </Component>
           <Component Id="SmtpProxy.exe.config" Guid="FEF649C4-EAB1-47C9-B9E1-C20160825BC7">
             <File Id="SmtpProxy.exe.config"
-                  Name="SmtpProxy.exe.config"
+                  Name="Sample SmtpProxy.exe.config"
                   Source="..\SmtpProxy\bin\Release\SmtpProxy.exe.config"
                   KeyPath="yes" Vital="yes" />
           </Component>
