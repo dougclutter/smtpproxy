@@ -67,7 +67,8 @@
     <Compile Include="SmtpProxyService.Designer.cs">
       <DependentUpon>SmtpProxyService.cs</DependentUpon>
     </Compile>
-    <Compile Include="SocketProcessor.cs" />
+    <Compile Include="SocketExtensions.cs" />
+    <Compile Include="TrafficProcessor.cs" />
     <Compile Include="SmtpServer.cs" />
   </ItemGroup>
   <ItemGroup>
