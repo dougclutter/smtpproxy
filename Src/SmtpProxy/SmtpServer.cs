@@ -7,6 +7,7 @@ using System.Net.Security;
 using System.IO;
 using SmtpProxy.Properties;
 using System.Diagnostics;
+using System.Threading;
 
 namespace SmtpProxy
 {
@@ -23,38 +24,8 @@ namespace SmtpProxy
         StreamWriter ClearTextWriter;
         #endregion
 
-        #region Constructors
-        public SmtpServer()
-        {
-            Initialize();
-        }
-        #endregion
-
-        #region Properties
-        public string ConnectResponse {get; private set;}
-        #endregion
-
         #region Public Methods
-        public void Write(byte[] buffer, int count)
-        {
-            SecureStream.Write(buffer, 0, count);
-            SecureStream.Flush();
-        }
-        public int Read(byte[] buffer)
-        {
-            return SecureStream.Read(buffer, 0, buffer.Length);
-        }
-        public void Dispose()
-        {
-            Program.Trace.TraceInformation("Disconnecting from SMTP server {0}:{1}", Settings.Default.SmtpHostUrl, Settings.Default.SmtpPort);
-
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-        #endregion
-
-        #region Protected / Private Methods
-        void Initialize()
+        public string Connect()
         {
             // In testing, I found that the smtp.live.com servers will sometimes fail to connect.
             // Retry the connection until it works or the timeout expires.
@@ -64,31 +35,62 @@ namespace SmtpProxy
             {
                 try
                 {
-                    ConnectToServer();
-                    return;
+                    return ConnectToServer();
                 }
                 catch (InvalidOperationException ex)
                 {
-                    lastException = ex;
-                    Program.Trace.TraceInformation("SmtpServer.Initialize is ignoring an InvalidOperationException ({0}) probably due to an inability to connect to the SMTP server.", ex.Message);
+                    IgnoreException(lastException = ex);
                 }
                 catch (IOException ex)
                 {
-                    lastException = ex;
-                    Program.Trace.TraceInformation("SmtpServer.Initialize is ignoring an IOException ({0}) probably due to an inability to connect to the SMTP server.", ex.Message);
+                    IgnoreException(lastException = ex);
                 }
-                Program.Trace.TraceEvent(TraceEventType.Warning, 1, 
+                Program.Trace.TraceEvent(TraceEventType.Warning, 1001,
                     "Failed to connect to SMTP server {0}:{1}.", Settings.Default.SmtpHostUrl, Settings.Default.SmtpPort);
 
                 // Release any resources that were allocated and sleep briefly before trying again
                 ReleaseResources();
-                System.Threading.Thread.Sleep(2500);
+                Thread.Sleep(2500);
             }
             throw new TimeoutException("Unable to connect to SMTP server.", lastException);
         }
-        void ConnectToServer()
+        public void Write(byte[] buffer, int count)
         {
-            Program.Trace.TraceInformation("Connecting to SMTP server {0}:{1}", Settings.Default.SmtpHostUrl, Settings.Default.SmtpPort);
+            ThrowIfClientNull();
+            SecureStream.Write(buffer, 0, count);
+            SecureStream.Flush();
+        }
+        public int Read(byte[] buffer)
+        {
+            ThrowIfClientNull();
+            return SecureStream.Read(buffer, 0, buffer.Length);
+        }
+        public bool IsConnected { get { return Client.Client.IsConnected(); } }
+        public int Available { get { return Client.Client.Available; } }
+        public void Dispose()
+        {
+            Program.Trace.TraceEvent(TraceEventType.Information, 1022, "Disconnecting from SMTP server {0}:{1}", Settings.Default.SmtpHostUrl, Settings.Default.SmtpPort);
+
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
+
+        #region Protected / Private Methods
+        void ThrowIfClientNull()
+        {
+            if (Client == null)
+                throw new InvalidOperationException("Cannot perform this operation until Connect has been called");
+        }
+        static void IgnoreException(Exception ex)
+        {
+            Program.Trace.TraceEvent(TraceEventType.Information, 1011,
+                "SmtpServer is ignoring the following exception probably due to an inability to connect to the SMTP server: {0}: {1}", 
+                ex.GetType().Name, ex.Message);
+        }
+        string ConnectToServer()
+        {
+            Program.Trace.TraceEvent(TraceEventType.Information, 1023, "Connecting to SMTP server {0}:{1}", Settings.Default.SmtpHostUrl, Settings.Default.SmtpPort);
 
             // Connect to the TargetServer
             Client = new TcpClient(Settings.Default.SmtpHostUrl, Settings.Default.SmtpPort);
@@ -98,8 +100,8 @@ namespace SmtpProxy
             ClearTextReader = new StreamReader(NetworkStream);
             ClearTextWriter = new StreamWriter(NetworkStream) { AutoFlush = true };
 
-            ConnectResponse = ClearTextReader.ReadLine();
-            if (!ConnectResponse.StartsWith("220 "))
+            string response = ClearTextReader.ReadLine();
+            if (!response.StartsWith("220 "))
                 throw new InvalidOperationException("SMTP Server did not respond to connection request");
 
             ClearTextWriter.WriteLine("HELO {0}", Environment.MachineName);
@@ -114,6 +116,8 @@ namespace SmtpProxy
 
             SecureStream = new SslStream(NetworkStream, false, null, null, EncryptionPolicy.RequireEncryption);
             SecureStream.AuthenticateAsClient(Settings.Default.SmtpHostUrl);
+
+            return response;
         }
         void ReleaseResources()
         {
