@@ -1,0 +1,15 @@
+<div class="wikidoc">
+<h2>Why was SmtpProxy created?</h2>
+<p>Both GMail and Microsoft Live Mail provide SMTP servers for sending email, and they both require an encrypted (SSL/TLS) connection. It is good that they do this, but it makes it difficult to use email client software that does not support SSL/TLS.</p>
+<p>When my company ran into this problem, we set up an internal SMTP server and had it relay the mail to GMail/Live, but this led to other problems. Some software uses the same user credentials for logging into the SMTP server AND for sending the email. So,
+ email that should have had a reply to email address of &quot;support@mycompany.com&quot; ended up with a reply to of &quot;smtpuser@mycompany.internal&quot;. To work around this, we created SmtpProxy.</p>
+<h2>What does SmtpProxy do?</h2>
+<p>SmtpProxy listens on a port you choose; the default port is 25. When SmtpProxy detects a connection on this port, it does the following:</p>
+<ul>
+<li>Connects to the SMTP server you configure (GMail / Microsoft Live Mail / any other SMTP server)
+</li><li>Starts an encrypted connection with the SMTP server </li><li>Returns the connection information to your email client </li></ul>
+<p><br>
+After the inital connection is established, SmtpProxy acts as a middleman. Any data received from your email client is forwarded to the SMTP server and any data returned from the SMTP server is sent to your client.</p>
+<p>SmptProxy runs as a Windows service so it can be installed on a LAN server and used by your entire office. Note that SmtpProxy does NOT login to the SMTP server, so each user on the LAN can use their own credentials.</p>
+<p>SmtpProxy can also be installed on a standalone Windows machine. It uses very little memory and almost no CPU.</p>
+</div><div class="ClearBoth"></div>

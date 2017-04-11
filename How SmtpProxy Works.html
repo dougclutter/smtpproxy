@@ -1,0 +1,15 @@
+<div class="wikidoc">
+<h2>How SmtpProxy Works</h2>
+<p>First, let&rsquo;s define a few terms:</p>
+<ul>
+<li>SMTP Server &ndash; This is a server, usually located on the internet, that is responsible for sending emails to other servers.
+</li><li>Email Client &ndash; This is a program that sends email.&nbsp; It could be a program you install on your local computer, such as Outlook or Thunderbird, or it could be a web site that sends email on your behalf.
+</li><li>Proxy &ndash; The dictionary defines a proxy as a substitute. </li></ul>
+<p>When an Email Client sends an email, it will usually contact an SMTP Server.&nbsp; After the SMTP Server accepts the email, it locates the correct email server for your email and sends it over the internet to that server.</p>
+<p><img title="Without SmtpProxy" src="http://download.codeplex.com/download?ProjectName=smtpproxy&DownloadId=249079" alt="Delivering an email without SmtpProxy" width="680" height="204"></p>
+<p>If the SMTP Server doesn&rsquo;t require an encrypted connection from the Email Client, this works great.&nbsp; Unfortunately, many SMTP Servers now require an encrypted connection.&nbsp; While this is great for security, it doesn&rsquo;t help you much if
+ you&rsquo;re stuck with an Email Client that doesn&rsquo;t support an encrypted connection. This is where SmtpProxy can be a big help.</p>
+<p><img title="WithSmtpProxy" src="http://download.codeplex.com/download?ProjectName=smtpproxy&DownloadId=249080" border="0" alt="WithSmtpProxy" width="859" height="210" style="padding-left:0px; padding-right:0px; display:inline; padding-top:0px; border:0px"></p>
+<p>With SmtpProxy, your Email Client connects to SmtpProxy using an unencrypted connection.&nbsp; Then, SmtpProxy connects to the SMTP Server using an encrypted connection.&nbsp; After that, SmtpProxy acts like a middleman sending your email on to the SMTP
+ server and sending the SMTP Server&rsquo;s responses back to the Email Client.</p>
+</div><div class="ClearBoth"></div>

@@ -1,0 +1,92 @@
+<div class="wikidoc">
+<h2>Installing SmtpProxy</h2>
+<p>The download is a Windows Installer (MSI) file that can be used to install SmtpProxy on any machine that supports the .NET Framework v4 &ndash; Client Profile.&nbsp; You should make sure this is installed on your computer before running the MSI.</p>
+<h2>Configuring SmtpProxy</h2>
+<p>SmtpProxy is configured using a config file. This is a plain text file that can be edited with Notepad.</p>
+<p>The default location of the config file is:</p>
+<ul>
+<li>On 32 bit machines: C:\Program Files\SmtpProxy\SmtpProxy.exe.config </li><li>On 64 bit machines: C:\Program Files (x86)\SmtpProxy\SmtpProxy.exe.config </li></ul>
+<p>If you modify this file, you must restart the SmtpProxy for the new settings to take effect.&nbsp; Use the Restart option from the Windows Services window.&nbsp; You can also restart a service from a console window by issuing two commands:</p>
+<ol>
+<li>NET STOP SmtpProxy </li><li>NET START SmtpProxy </li></ol>
+<h2>SmtpProxy Settings</h2>
+<p>The following items can be configured with SmtpProxy&rsquo;s config file:</p>
+<ul>
+<li>SmtpProxy can write a log of all it&rsquo;s activities.&nbsp; The default file to write the log file to is SmtpProxy.trace.log.
+</li><li>SmtpProxy can log several different types of activities.&nbsp; You can control what is written to the log file by setting the log switches.&nbsp; By default, they are set to Off so nothing is written to the log file.&nbsp; Valid switch values are Off, Error,
+ Warning, Info, and Verbose with each one providing more information than the last.&nbsp; Once you have SmtpProxy working, you should turn logging Off.
+</li><li>The Url to the SMTP server. Default is smtp.live.com. </li><li>The SMTP server port. Default is 587. </li><li>The port to listen on. Default is 25. </li></ul>
+<h2>Default SmtpProxy.exe.config file</h2>
+<p>Below is the default SmtpProxy file.</p>
+<pre style="background-color:#d0d0d0">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+  <br>&lt;configuration&gt;
+  <br>&nbsp; &lt;configSections&gt;
+  <br>&nbsp;&nbsp;&nbsp; &lt;sectionGroup name=&quot;applicationSettings&quot; type=&quot;System.Configuration.ApplicationSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089&quot; &gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;section name=&quot;SmtpProxy.Properties.Settings&quot; type=&quot;System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089&quot; requirePermission=&quot;false&quot; /&gt;
+  <br>&nbsp;&nbsp;&nbsp; &lt;/sectionGroup&gt;
+  <br>&nbsp; &lt;/configSections&gt;
+  <br>&nbsp; &lt;system.diagnostics&gt;
+  <br>&nbsp;&nbsp;&nbsp; &lt;trace autoflush=&quot;true&quot; /&gt;
+  <br>&nbsp;&nbsp;&nbsp; &lt;sources&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;source name=&quot;System.Net&quot;&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;listeners&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;add name=&quot;TraceListener&quot;/&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/listeners&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/source&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;source name=&quot;System.Net.Sockets&quot;&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;listeners&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;add name=&quot;TraceListener&quot;/&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/listeners&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/source&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;source name=&quot;System.Net.Cache&quot;&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;listeners&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;add name=&quot;TraceListener&quot;/&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/listeners&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/source&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;source name=&quot;SmtpProxy&quot;&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;listeners&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;add name=&quot;TraceListener&quot;/&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/listeners&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/source&gt;
+  <br>&nbsp;&nbsp;&nbsp; &lt;/sources&gt;
+  <br>&nbsp;&nbsp;&nbsp; &lt;sharedListeners&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!--By default, trace data is written to the same directory where the EXE is located.
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The default filename is SmtpProxy.trace.log. 
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; You can change the initializeData value to specify another filename or location. 
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;add
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; name=&quot;TraceListener&quot;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; type=&quot;System.Diagnostics.TextWriterTraceListener&quot;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; initializeData=&quot;<span>SmtpProxy.trace.log</span>&quot;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&gt;
+  <br>&nbsp;&nbsp;&nbsp; &lt;/sharedListeners&gt;
+  <br>&nbsp;&nbsp;&nbsp; &lt;!--Use these switches to turn logging on or off and to set the level of messages written to the log file.
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Valid values are Off, Error, Warning, Info, and Verbose. 
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --&gt;
+  <br>&nbsp;&nbsp;&nbsp; &lt;switches&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;add name=&quot;System.Net&quot; value=&quot;<span>Off</span>&quot; /&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;add name=&quot;System.Net.Sockets&quot; value=&quot;<span>Off</span>&quot; /&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;add name=&quot;System.Net.Cache&quot; value=&quot;Off&quot; /&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;add name=&quot;SmtpProxy&quot; value=&quot;<span>Off</span>&quot; /&gt;
+  <br>&nbsp;&nbsp;&nbsp; &lt;/switches&gt;
+  <br>&nbsp; &lt;/system.diagnostics&gt;
+  <br>&nbsp; &lt;applicationSettings&gt;
+  <br>&nbsp;&nbsp;&nbsp; &lt;!--SmtpProxy.Properties.Settings and their default values:
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PortToListenOn - default 25 - The port number that the SmtpProxy program will listen on
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SmtpHostUrl - default smtp.live.com - The URL of the SMTP server that SmtpProxy will connect to
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SmtpPort - default 587 - The port number of the SMTP server that SmtpProxy will connect to 
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --&gt;
+  <br>&nbsp;&nbsp;&nbsp; &lt;SmtpProxy.Properties.Settings&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;setting name=&quot;PortToListenOn&quot; serializeAs=&quot;String&quot;&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;value&gt;<span>25</span>&lt;/value&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/setting&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;setting name=&quot;SmtpHostUrl&quot; serializeAs=&quot;String&quot;&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;value&gt;<span>smtp.live.com</span>&lt;/value&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/setting&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;setting name=&quot;SmtpPort&quot; serializeAs=&quot;String&quot;&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;value&gt;<span>587</span>&lt;/value&gt;
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/setting&gt;
+  <br>&nbsp;&nbsp;&nbsp; &lt;/SmtpProxy.Properties.Settings&gt;
+  <br>&nbsp; &lt;/applicationSettings&gt;
+  <br>&lt;/configuration&gt;</pre>
+</div><div class="ClearBoth"></div>

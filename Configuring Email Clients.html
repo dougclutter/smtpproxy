@@ -1,0 +1,24 @@
+<div class="wikidoc">
+<h2>Configuring Email Clients</h2>
+<p>Using SmtpProxy is a simple matter of replacing the SMTP server settings in your client software with the SmtpProxy settings. For example:
+<br>
+<br>
+<strong>Client settings without SmtpProxy</strong></p>
+<ul>
+<li><strong>SMTP Server</strong>: smtp.live.com or smtp.gmail.com </li><li><strong>SMTP Port</strong>: 587 </li><li><strong>Use SSL/TLS</strong>: Yes </li><li><strong>SMTP Server requires login</strong>: Yes </li><li><strong>SMTP Server username</strong>: MyUsername </li><li><strong>SMTP Server password</strong>: MyPassword </li></ul>
+<p><br>
+<strong>Client settings with SmtpProxy</strong></p>
+<ul>
+<li><strong>SMTP Server</strong>: myserver or localhost </li><li><strong>SMTP Port</strong>: 25 </li><li><strong>Use SSL/TLS</strong>: No </li><li><strong>SMTP Server requires login</strong>: Yes </li><li><strong>SMTP Server username</strong>: MyUsername </li><li><strong>SMTP Server password</strong>: MyPassword </li></ul>
+<p><br>
+Note that you will continue to use the same username/password. That's because SmtpProxy will simply forward these on to the SMTP server that SmtpProxy is configured to use.</p>
+<h2>Setting Details</h2>
+<ul>
+<li><strong>SMTP Server</strong>: This is the name or IP Address of the computer that SmtpProxy is installed on.&nbsp; If SmtpProxy is installed on your local machine, then you can use localhost or 127.0.0.1.
+</li><li><strong>SMTP Port</strong>: This is the port number that SmtpProxy has been configured to listen on.
+</li><li><strong>Use SSL/TLS</strong>: SmtpProxy doesn&rsquo;t support encrypted connections, so this needs to be &ldquo;No&rdquo;.&nbsp; Some Email Clients refer to this as using an encrypted connection.
+</li><li><strong>SMTP Server requires login</strong>: If the SMTP server that SmtpProxy is connecting to requires a username and password, then this needs to be &ldquo;Yes&rdquo;.&nbsp; Almost all SMTP servers require you to login, so this will almost always be
+ &ldquo;Yes&rdquo;. </li><li><strong>SMTP Server username</strong>: This should be the same username that you use to connect to the SMTP Server.&nbsp; Usually, this is the same as your email address.
+</li><li><strong>SMTP Server password</strong>: This should be the same password that you use to connect to the SMTP Server. Usually, this is the same as the password you use to login to your email account.
+</li></ul>
+</div><div class="ClearBoth"></div>
